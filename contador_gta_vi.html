@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GTA VI — Contador</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#0b0f1a;
+      --neon1:#7ef9ff;
+      --neon2:#ff6ec7;
+      --accent:#ffd166;
+      --glass: rgba(255,255,255,0.04);
+    }
+    html,body{height:100%;margin:0;font-family:Oswald,system-ui,Arial,sans-serif;background:radial-gradient(1200px 600px at 10% 10%, rgba(34,40,49,0.5), transparent), linear-gradient(180deg,var(--bg1),#071026);color:white;display:flex;align-items:center;justify-content:center}
+    .frame{width:min(980px,92vw);padding:28px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,0.03), transparent);box-shadow:0 10px 40px rgba(2,6,23,0.6);backdrop-filter: blur(6px);text-align:center}
+    .title{font-family:'Press Start 2P', monospace;letter-spacing:1px;font-size:20px;margin-bottom:14px;color:var(--accent);text-transform:uppercase}
+    .badge{display:inline-block;padding:6px 14px;border-radius:999px;background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#021426;font-weight:700;margin-bottom:8px;font-size:13px}
+    .count{display:flex;gap:12px;justify-content:center;align-items:center;margin:14px 0}
+    .unit{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));padding:18px 20px;border-radius:12px;min-width:120px}
+    .num{font-size:46px;line-height:1;font-weight:800;letter-spacing:2px;color:transparent;background:linear-gradient(90deg,var(--neon1),var(--neon2));-webkit-background-clip:text;background-clip:text;text-shadow:0 2px 18px rgba(0,0,0,0.6)}
+    .label{font-size:11px;opacity:0.8;margin-top:6px}
+    .footer{margin-top:18px;font-size:14px;color:rgba(255,255,255,0.9)}
+    .small{font-size:12px;opacity:0.8;margin-top:8px}
+
+    /* subtle flicker */
+    @keyframes flicker{
+      0%{opacity:1}
+      5%{opacity:0.92}
+      7%{opacity:1}
+      12%{opacity:0.96}
+      13%{opacity:1}
+      100%{opacity:1}
+    }
+    .num{animation:flicker 3s linear infinite}
+
+    /* responsive */
+    @media (max-width:560px){.count{flex-direction:column}.unit{min-width:220px;padding:14px}.num{font-size:34px}}
+
+    /* GTA-ish decorative corner */
+    .gta-style{margin-top:10px;font-weight:700;font-size:20px;letter-spacing:0.6px;text-transform:uppercase;color:var(--neon2);filter: drop-shadow(0 6px 14px rgba(255,110,199,0.12))}
+  </style>
+</head>
+<body>
+  <div class="frame" role="application" aria-label="Contador regresivo hacia GTA VI">
+    <div class="title">Cuenta atrás</div>
+    <div class="badge">GTA VI STYLE</div>
+
+    <div id="counter" class="count" aria-live="polite">
+      <div class="unit">
+        <div id="days" class="num">0</div>
+        <div class="label">Días</div>
+      </div>
+      <div class="unit">
+        <div id="hours" class="num">00</div>
+        <div class="label">Horas</div>
+      </div>
+      <div class="unit">
+        <div id="minutes" class="num">00</div>
+        <div class="label">Minutos</div>
+      </div>
+      <div class="unit">
+        <div id="seconds" class="num">00</div>
+        <div class="label">Segundos</div>
+      </div>
+    </div>
+
+    <div class="gta-style">GTA VI — 26 de mayo de 2026</div>
+    <div class="small">Se actualizará según la hora local del navegador. Guarda como <code>contador_gta_vi.html</code> y sube a tu host.</div>
+  </div>
+
+  <script>
+    // Target date (year, monthIndex(0=Jan), day, hour, minute, second)
+    const target = new Date(2026, 4, 26, 0, 0, 0); // 26 May 2026 00:00:00 local
+
+    const elDays = document.getElementById('days');
+    const elHours = document.getElementById('hours');
+    const elMinutes = document.getElementById('minutes');
+    const elSeconds = document.getElementById('seconds');
+
+    function update(){
+      const now = new Date();
+      let diff = Math.floor((target - now) / 1000);
+      if (diff <= 0){
+        elDays.textContent = '0';
+        elHours.textContent = '00';
+        elMinutes.textContent = '00';
+        elSeconds.textContent = '00';
+        clearInterval(timer);
+        return;
+      }
+      const days = Math.floor(diff / 86400); diff %= 86400;
+      const hours = Math.floor(diff / 3600); diff %= 3600;
+      const minutes = Math.floor(diff / 60); const seconds = diff % 60;
+
+      elDays.textContent = String(days);
+      elHours.textContent = String(hours).padStart(2,'0');
+      elMinutes.textContent = String(minutes).padStart(2,'0');
+      elSeconds.textContent = String(seconds).padStart(2,'0');
+    }
+
+    update();
+    const timer = setInterval(update, 250);
+  </script>
+</body>
+</html>
